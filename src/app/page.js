@@ -7,47 +7,54 @@ export default function Home() {
 
   useEffect(() => {
     let previousUrl;
-  
+
     const fetchHeatmap = async () => {
-      const res = await fetch('https://distance-q4vy.onrender.com/heatmap/', {
+      // 🔁 Get live sensor data from your own API
+      const res1 = await fetch('/api/data');
+      const data = await res1.json();
+
+      // 🔁 Then send to Render server
+      const res2 = await fetch('https://distance-q4vy.onrender.com/heatmap/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          distance1: 20.5,
-          distance2: 35.2,
-          distance3: 15.8,
+          distance1: data.distance1,
+          distance2: data.distance2,
+          distance3: data.distance3,
         }),
       });
-  
-      const blob = await res.blob();
+
+      const blob = await res2.blob();
       const newUrl = URL.createObjectURL(blob);
+
       setImageUrl((oldUrl) => {
         if (oldUrl) URL.revokeObjectURL(oldUrl);
         return newUrl;
       });
+
       previousUrl = newUrl;
     };
-  
+
     fetchHeatmap();
     const interval = setInterval(fetchHeatmap, 2000);
-  
+
     return () => {
       clearInterval(interval);
       if (previousUrl) URL.revokeObjectURL(previousUrl);
     };
   }, []);
-  
-  
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-black">
+    <div className="w-screen h-screen bg-black flex items-center justify-center">
       {imageUrl ? (
-        <img src={imageUrl} alt="Heatmap" className="max-w-full max-h-screen" />
+        <img src={imageUrl} alt="Heatmap" className="w-full h-full object-cover" />
       ) : (
         <p className="text-white">Loading heatmap...</p>
       )}
     </div>
   );
 }
+
 
 /***
 'use client';
