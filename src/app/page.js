@@ -17,7 +17,7 @@ const distanceToColor = (distance) => {
 };
 
 export default function Home() {
-  const [data, setData] = useState({ distance1: null, distance2: null });
+  const [data, setData] = useState({ distance1: null, distance2: null ,distance3: null });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,6 +34,7 @@ export default function Home() {
 
   const color1 = distanceToColor(data.distance1);
   const color2 = distanceToColor(data.distance2);
+  const color3 = distanceToColor(data.distance3);
 
   return (
     <div className="flex flex-row w-screen h-screen">
@@ -50,6 +51,13 @@ export default function Home() {
       >
         <p>Distance 2</p>
         <p>{data.distance2 !== null ? `${data.distance2.toFixed(1)} cm` : '—'}</p>
+      </div>
+      <div
+        className="flex-1 flex flex-col items-center justify-center text-white text-xl font-semibold transition-all duration-500"
+        style={{ backgroundColor: color3 }}
+      >
+        <p>Distance 3</p>
+        <p>{data.distance3 !== null ? `${data.distance3.toFixed(1)} cm` : '—'}</p>
       </div>
     </div>
   );
