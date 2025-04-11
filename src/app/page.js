@@ -2,6 +2,45 @@
 
 import { useEffect, useState } from 'react';
 
+export default function Home() {
+  const [imageUrl, setImageUrl] = useState(null);
+
+  useEffect(() => {
+    const fetchHeatmap = async () => {
+      const res = await fetch('https://distance-q4vy.onrender.com/heatmap/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          distance1: 20.5,
+          distance2: 35.2,
+          distance3: 15.8,
+        }),
+      });
+
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      setImageUrl(url);
+    };
+
+    fetchHeatmap();
+  }, []);
+
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-black">
+      {imageUrl ? (
+        <img src={imageUrl} alt="Heatmap" className="max-w-full max-h-screen" />
+      ) : (
+        <p className="text-white">Loading heatmap...</p>
+      )}
+    </div>
+  );
+}
+
+/***
+'use client';
+
+import { useEffect, useState } from 'react';
+
 // Utility: converts a value (0-60) into a color from red → yellow → green
 const distanceToColor = (distance) => {
   if (distance === null) return '#808080'; // gray for no data
@@ -62,3 +101,4 @@ export default function Home() {
     </div>
   );
 }
+*/
