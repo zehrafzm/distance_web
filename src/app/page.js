@@ -6,6 +6,8 @@ export default function Home() {
   const [imageUrl, setImageUrl] = useState(null);
 
   useEffect(() => {
+    let previousUrl;
+  
     const fetchHeatmap = async () => {
       const res = await fetch('https://distance-q4vy.onrender.com/heatmap/', {
         method: 'POST',
@@ -16,15 +18,26 @@ export default function Home() {
           distance3: 15.8,
         }),
       });
-
+  
       const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      setImageUrl(url);
+      const newUrl = URL.createObjectURL(blob);
+      setImageUrl((oldUrl) => {
+        if (oldUrl) URL.revokeObjectURL(oldUrl);
+        return newUrl;
+      });
+      previousUrl = newUrl;
     };
-
+  
     fetchHeatmap();
+    const interval = setInterval(fetchHeatmap, 2000);
+  
+    return () => {
+      clearInterval(interval);
+      if (previousUrl) URL.revokeObjectURL(previousUrl);
+    };
   }, []);
-
+  
+  
   return (
     <div className="flex items-center justify-center min-h-screen bg-black">
       {imageUrl ? (
