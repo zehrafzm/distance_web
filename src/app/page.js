@@ -2,6 +2,20 @@
 
 import { useEffect, useState } from 'react';
 
+// Utility: converts a value (0-60) into a color from red → yellow → green
+const distanceToColor = (distance) => {
+  if (distance === null) return '#808080'; // gray for no data
+
+  const clamped = Math.min(Math.max(distance, 0), 60); // clamp between 0 and 60
+  const percent = clamped / 60;
+
+  const r = percent < 0.5 ? 255 : Math.floor(255 - (percent - 0.5) * 2 * 255);
+  const g = percent > 0.5 ? 255 : Math.floor(percent * 2 * 255);
+  const b = 0;
+
+  return `rgb(${r}, ${g}, ${b})`;
+};
+
 export default function Home() {
   const [data, setData] = useState({ distance1: null, distance2: null });
 
@@ -18,11 +32,25 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
+  const color1 = distanceToColor(data.distance1);
+  const color2 = distanceToColor(data.distance2);
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      <h1 className="text-2xl font-bold">ESP32 Distance Data</h1>
-      <p>Distance 1: {data.distance1 ?? '—'}</p>
-      <p>Distance 2: {data.distance2 ?? '—'}</p>
+    <div className="flex flex-row w-screen h-screen">
+      <div
+        className="flex-1 flex flex-col items-center justify-center text-white text-xl font-semibold transition-all duration-500"
+        style={{ backgroundColor: color1 }}
+      >
+        <p>Distance 1</p>
+        <p>{data.distance1 !== null ? `${data.distance1.toFixed(1)} cm` : '—'}</p>
+      </div>
+      <div
+        className="flex-1 flex flex-col items-center justify-center text-white text-xl font-semibold transition-all duration-500"
+        style={{ backgroundColor: color2 }}
+      >
+        <p>Distance 2</p>
+        <p>{data.distance2 !== null ? `${data.distance2.toFixed(1)} cm` : '—'}</p>
+      </div>
     </div>
   );
 }
