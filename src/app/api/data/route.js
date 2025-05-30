@@ -1,4 +1,4 @@
-let latestData = { distance1: null, distance2: null ,distance3: null};
+let latestData = { distance1: null, distance2: null ,distance3: null, distance4: null, distance5: null, distance6: null};
 
 export async function POST(request) {
   const body = await request.json();
