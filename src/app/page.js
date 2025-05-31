@@ -8,7 +8,7 @@ export default function Home() {
   useEffect(() => {
     let previousUrl;
 
-    const fetchImage = async () => {
+    async function fetchImage() {
       const res = await fetch('https://distance-q4vy.onrender.com/image');
       if (res.status === 200) {
         const blob = await res.blob();
@@ -21,13 +21,12 @@ export default function Home() {
 
         previousUrl = newUrl;
       }
-    };
+    }
 
     fetchImage();
-    const interval = setInterval(fetchImage, 2000);
-
+    const id = setInterval(fetchImage, 2000);
     return () => {
-      clearInterval(interval);
+      clearInterval(id);
       if (previousUrl) URL.revokeObjectURL(previousUrl);
     };
   }, []);
@@ -35,9 +34,18 @@ export default function Home() {
   return (
     <div className="w-screen h-screen bg-black flex items-center justify-center">
       {imageUrl ? (
-        <img src={imageUrl} alt="Heatmap" className="w-full h-full object-cover" />
+        <img
+          src={imageUrl}
+          alt="Heatmap"
+          className="
+            max-w-full    /* allow the image to scale down if needed */
+            max-h-full    /* allow the image to scale down if needed */
+            object-contain /* preserve entire image without cropping */
+            image-rendering-[pixelated] /* keep blocky pixels sharp */
+          "
+        />
       ) : (
-        <p className="text-white">Loading heatmap...</p>
+        <p className="text-white">Loading heatmap…</p>
       )}
     </div>
   );
