@@ -1,7 +1,7 @@
 
 let latestData = { distance1: null, distance2: null ,distance3: null,
                    distance4: null, distance5: null, distance6: null,
-                   distance7: null, distance8: null, distance9: null};
+                   distance7: null, distance8: null};
 
 export async function POST(request) {
   const body = await request.json();
@@ -13,8 +13,7 @@ export async function POST(request) {
     distance5: body.distance5,
     distance6: body.distance6,
     distance4: body.distance7,
-    distance5: body.distance8,
-    distance6: body.distance9
+    distance5: body.distance8
   };
   return new Response(JSON.stringify({ success: true }), { status: 200 });
 }
